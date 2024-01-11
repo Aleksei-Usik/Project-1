@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      word-wrap: break-word;
+      font-size: larger;
+    }
+
+    div {
+      margin: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      font-size: larger;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+    }
+
+    input[type="file"] {
+      border: 1px solid #ddd;
+      background-color: #fff;
+      font-size: medium;
+    }
+
+    input[type="submit"],
+    a {
+      background-color: rgb(25, 25, 25);
+      display: inline-block;
+      color: white;
+      padding: 20px;
+      margin: 10px;
+      cursor: pointer;
+      width: calc(100% - 60px);
+      font-size: larger;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    input[type="submit"] {
+      width: calc(100% - 20px);
+    }
+
+    a:hover,
+    input:hover {
+      opacity: 0.8;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      font-size: larger;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Главная страница</h1>
+  <div>
+    <form action="/upload" method="post" enctype="multipart/form-data" target="_self">
+      Отправить файл вручную:
+      <input type="file" id="file" name="file" accept=".xlsx" required><br>
+      <input type="submit">
+    </form>
+  </div>
+
+  <div>
+    <form method="post" action="/upload_latest">
+      Введите новый адресс
+      <input type="text" placeholder="Введите адресс" name="adress" required>
+      <br>Введите новую периодичность в минутах
+      <input type="text" placeholder="Введите периодичность" name="time" required>
+      <br>
+      <input type="submit">
+    </form>
+  </div>
+
+  <div>
+    <a href="/upload_latest">Cкачать из источника</a>
+
+    <a href="/role">Управление ролями</a>
+
+    <a href="/Exit">Выход</a>
+  </div>
+
+  <div>
+    <p style="text-align: center">История действий:</p>
+    {{ range . }}
+    <li style="font-size: medium">{{ . }}</li>
+    {{ end }}
+  </div>
+</body>
+
+</html>

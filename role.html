@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      text-align: center;
+      font-size: larger;
+    }
+
+    div {
+      margin: 10px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      font-size: larger;
+    }
+
+
+    input[type="submit"],
+    a {
+      background-color: rgb(25, 25, 25);
+      display: inline-block;
+      color: white;
+      padding: 20px;
+      margin: 10px;
+      border: none;
+      cursor: pointer;
+      width: calc(100% - 60px);
+      font-size: larger;
+      text-decoration: none;
+    }
+
+    input[type="submit"] {
+      width: calc(100% - 20px);
+    }
+
+    a:hover,
+    input:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <a href="/">На главную</a>
+  <br>
+  {{ if .Error }}
+  <div>Ошибка получения списка пользователей</div>
+  {{ else }}
+  {{ range .Roles }}
+  <div>
+    <form action="/role_change" method="post">
+      Имя : {{ .Username }}
+      <input type="hidden" name="Id" value="{{ .Id }}">
+      <select name="Role">
+        <option value="student" {{if eq .Role "student" }}selected{{end}}>student</option>
+        <option value="teacher" {{if eq .Role "teacher" }}selected{{end}}>teacher</option>
+        <option value="admin" {{if eq .Role "admin" }}selected{{end}}>admin</option>
+      </select>
+      <input type="submit" value="Изменить роль">
+    </form>
+    <a href="/delete_user?tg_id={{ .Tg_id }}">Удалить пользователя</a>
+  </div>
+  {{ end }}
+  {{end}}
+
+</body>
+
+</html>
