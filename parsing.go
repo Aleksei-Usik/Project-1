@@ -57,7 +57,7 @@ func NewGroup() Group {
 func parse_xslx_rasp(data *http.Response, r *http.Request, w http.ResponseWriter) {
 	f, err := excelize.OpenReader(data.Body)
 	if err != nil {
-		logMessage(r, w, fmt.Sprintf("%s Ошибка чтения файла: %s \n", time.Now().Format("2006-01-02 15:04:05"), err.Error()))
+		logMessage(r, w, fmt.Sprintf("%s Ошибка чтения файла: %s \n", time.Now().Format("02-01-06 15:04:05"), err.Error()))
 		return
 	}
 
@@ -65,7 +65,7 @@ func parse_xslx_rasp(data *http.Response, r *http.Request, w http.ResponseWriter
 
 	rows, err := f.GetRows(sheet)
 	if err != nil {
-		logMessage(r, w, fmt.Sprintf("%s Ошибка получения строк: %s \n", time.Now().Format("2006-01-02 15:04:05"), err.Error()))
+		logMessage(r, w, fmt.Sprintf("%s Ошибка получения строк: %s \n", time.Now().Format("02-01-06 15:04:05"), err.Error()))
 		return
 	}
 
@@ -314,21 +314,22 @@ func parse_xslx_rasp(data *http.Response, r *http.Request, w http.ResponseWriter
 	}
 
 	jsonData, err := json.MarshalIndent(raspisanie, " ", "  ")
+
 	if err != nil {
-		logMessage(r, w, fmt.Sprintf("%s Ошибка: %s", time.Now().Format("2006-01-02 15:04:05"), err))
+		logMessage(r, w, fmt.Sprintf("%s Ошибка: %s", time.Now().Format("02-01-06 15:04:05"), err))
 		return
 	}
 	resp, err := http.Post("https://599c-139-28-177-252.ngrok-free.app/UpdateSchedule", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		logMessage(r, w, fmt.Sprintf("%s Ошибка отправки расписания: %s", time.Now().Format("2006-01-02 15:04:05"), err))
+		logMessage(r, w, fmt.Sprintf("%s Ошибка отправки расписания: %s", time.Now().Format("02-01-06 15:04:05"), err))
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
-		logMessage(r, w, fmt.Sprintf("%s Расписание успешно передано", time.Now().Format("2006-01-02 15:04:05")))
+		logMessage(r, w, fmt.Sprintf("%s Расписание успешно передано", time.Now().Format("02-01-06 15:04:05")))
 	} else {
-		logMessage(r, w, fmt.Sprintf("%s Ошибка при передаче на расписания : %s", time.Now().Format("2006-01-02 15:04:05"), resp.Status))
+		logMessage(r, w, fmt.Sprintf("%s Ошибка при передаче на расписания : %s", time.Now().Format("02-01-06 15:04:05"), resp.Status))
 	}
 }
 

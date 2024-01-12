@@ -19,8 +19,7 @@ import (
 var (
 	adress  string       = "https://schedule-cloud.cfuv.ru/index.php/s/YLoTDF3GqDjnDbR/download/09.03.01%20Информатика%20и%20вычислительная%20техника,09.03.04%20Программная%20инженерия%20%281-4%29.xlsx"
 	ticker  *time.Ticker = time.NewTicker(30 * time.Minute)
-	key                  = []byte("Secret_Key")
-	store                = sessions.NewCookieStore(key)
+	store                = sessions.NewCookieStore([]byte("0Z0llZ15JFVryM8OmXfh95dfBfqrpvif"))
 	letters              = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 )
 
@@ -35,7 +34,7 @@ func randString(n int) string {
 func download_latest_rasp() {
 	resp, err := http.Get(adress)
 	if err != nil {
-		fmt.Println(time.Now().Format("2006-01-02 15:04:05"), err)
+		fmt.Println(time.Now().Format("02-01-06 15:04:05"), err)
 		return
 	}
 	parse_xslx_rasp(resp, nil, nil)
@@ -50,17 +49,17 @@ func upload_click(w http.ResponseWriter, r *http.Request) {
 		if err == nil {
 			ticker.Stop()
 			ticker.Reset(time.Duration(minut) * time.Minute)
-			logMessage(r, w, fmt.Sprintf("%s Новый адресс и период успешно передан : %s <br> Период в минутах : %d \n", time.Now().Format("2006-01-02 15:04:05"), adress, minut))
+			logMessage(r, w, fmt.Sprintf("%s Новый адресс и период успешно передан : %s <br> Период в минутах : %d \n", time.Now().Format("02-01-06 15:04:05"), adress, minut))
 		}
 	}
 
 	resp, err := http.Get(adress)
 	if err != nil {
-		logMessage(r, w, fmt.Sprintf("%s Ошибка получения файла из :<br> %s \n", time.Now().Format("2006-01-02 15:04:05"), adress))
+		logMessage(r, w, fmt.Sprintf("%s Ошибка получения файла из :<br> %s \n", time.Now().Format("02-01-06 15:04:05"), adress))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
-	logMessage(r, w, fmt.Sprintf("%s Успешно получен файл из :<br> %s \n", time.Now().Format("2006-01-02 15:04:05"), adress))
+	logMessage(r, w, fmt.Sprintf("%s Успешно получен файл из :<br> %s \n", time.Now().Format("02-01-06 15:04:05"), adress))
 	parse_xslx_rasp(resp, r, w)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	return
@@ -69,16 +68,10 @@ func upload_click(w http.ResponseWriter, r *http.Request) {
 func uploadFile(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(10 << 20)
 
-	files, ok := r.MultipartForm.File["file"]
-	if !ok || len(files) == 0 {
-		logMessage(r, w, fmt.Sprintf("%s Ошибка передачи файла \n", time.Now().Format("2006-01-02 15:04:05")))
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
+	file, err := r.MultipartForm.File["file"][0].Open()
 
-	file, err := files[0].Open()
 	if err != nil {
-		logMessage(r, w, fmt.Sprintf("%s Ошибка передачи файла \n", time.Now().Format("2006-01-02 15:04:05")))
+		logMessage(r, w, fmt.Sprintf("%s Ошибка передачи файла \n", time.Now().Format("02-01-06 15:04:05")))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -87,7 +80,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	resp := &http.Response{
 		Body: file,
 	}
-	logMessage(r, w, fmt.Sprintf("%s Файл успешно получен \n", time.Now().Format("2006-01-02 15:04:05")))
+	logMessage(r, w, fmt.Sprintf("%s Файл успешно получен \n", time.Now().Format("02-01-06 15:04:05")))
 	parse_xslx_rasp(resp, r, w)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
@@ -151,7 +144,7 @@ func roleChangeHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := http.Get(fmt.Sprintf("http://localhost:8080/update?Id=%s&Key=Role&Value=%s", Id, role))
 	if err != nil {
-		logMessage(r, w, fmt.Sprintf("%s Ошибка выполнения запроса: %s", time.Now().Format("2006-01-02 15:04:05"), err))
+		logMessage(r, w, fmt.Sprintf("%s Ошибка выполнения запроса: %s", time.Now().Format("02-01-06 15:04:05"), err))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -162,12 +155,12 @@ func roleChangeHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if string(body) == "Updated successfully" {
-			logMessage(r, w, fmt.Sprintf("%s Успешно изменена роль пользователя %s на %s", time.Now().Format("2006-01-02 15:04:05"), Id, role))
+			logMessage(r, w, fmt.Sprintf("%s Успешно изменена роль пользователя %s на %s", time.Now().Format("02-01-06 15:04:05"), Id, role))
 			http.Redirect(w, r, "/role", http.StatusSeeOther)
 			return
 		}
 	} else {
-		logMessage(r, w, fmt.Sprintf("%s Ошибка изменения ролей: %s", time.Now().Format("2006-01-02 15:04:05"), err))
+		logMessage(r, w, fmt.Sprintf("%s Ошибка изменения ролей: %s", time.Now().Format("02-01-06 15:04:05"), err))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -179,27 +172,27 @@ func delete_user(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := http.Get(fmt.Sprintf("http://localhost:8080/del?tg_id=%s", tg))
 	if err != nil {
-		logMessage(r, w, fmt.Sprintf("%s *1 Ошибка удаления пользователя по tg_id : %s", time.Now().Format("2006-01-02 15:04:05"), tg))
+		logMessage(r, w, fmt.Sprintf("%s *1 Ошибка удаления пользователя по tg_id : %s", time.Now().Format("02-01-06 15:04:05"), tg))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 	if resp.StatusCode != http.StatusOK {
-		logMessage(r, w, fmt.Sprintf("%s *2 Ошибка удаления пользователя: %s", time.Now().Format("2006-01-02 15:04:05"), tg))
+		logMessage(r, w, fmt.Sprintf("%s *2 Ошибка удаления пользователя: %s", time.Now().Format("02-01-06 15:04:05"), tg))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		logMessage(r, w, fmt.Sprintf("%s *3 Ошибка удаления %s пользователя: %s", time.Now().Format("2006-01-02 15:04:05"), tg, err))
+		logMessage(r, w, fmt.Sprintf("%s *3 Ошибка удаления %s пользователя: %s", time.Now().Format("02-01-06 15:04:05"), tg, err))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 	if string(body) == "Deleted successfully" {
-		logMessage(r, w, fmt.Sprintf("%s Пользователь по tg_id : %s успешно удален", time.Now().Format("2006-01-02 15:04:05"), tg))
+		logMessage(r, w, fmt.Sprintf("%s Пользователь по tg_id : %s успешно удален", time.Now().Format("02-01-06 15:04:05"), tg))
 		http.Redirect(w, r, "/role", http.StatusSeeOther)
 		return
 	} else {
-		logMessage(r, w, fmt.Sprintf("%s *4 Ошибка удаления пользователя по tg_id : %s", time.Now().Format("2006-01-02 15:04:05"), tg))
+		logMessage(r, w, fmt.Sprintf("%s *4 Ошибка удаления пользователя по tg_id : %s", time.Now().Format("02-01-06 15:04:05"), tg))
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -358,7 +351,6 @@ func Loggin_check(next http.Handler) http.Handler {
 }
 
 func main() {
-	//download_latest_rasp()
 	go func() {
 		for {
 			select {
