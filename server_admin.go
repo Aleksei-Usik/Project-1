@@ -283,12 +283,16 @@ func new_session(w http.ResponseWriter, r *http.Request) {
 		return
 
 	}
+	if r.URL.Query().Get("id") != "" {
+		http.Redirect(w, r, "/new_session", http.StatusSeeOther)
+		return
+	}
 	id = randString(4)
 	sessi.Values["token"] = id
 	fmt.Println(sessi.Values["token"])
 	sessi.Save(r, w)
 	fmt.Println("****")
-	fmt.Fprintf(w, "Введите этот токен в телеграмм бота, а после перезагрузите страницу :\n \t %s \n\t %s", id, "http://127.0.0.1:8082/new_session")
+	fmt.Fprintf(w, "Введите этот токен в телеграмм бота, а после перезагрузите страницу :\n \t %s", id)
 	return
 }
 
